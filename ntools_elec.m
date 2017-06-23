@@ -174,8 +174,8 @@ elec_all_tkrRAS = [x y z];
 elec_all_scannerRAS = elec_all_tkrRAS - repmat(scanner2tkr,size(elec_all_tkrRAS,1),1);
 elec_vox = ntools_elec_savebin(elec_all_scannerRAS,hdr,fname_bin);
 
-% transform into mni space
-elec_mni = ntools_elec_dartel_warp(fname_bin,[preop_img_path,preop_img_file]);
+%% transform into mni space
+elec_mni = ntools_elec_dartel_warp(fname_bin,fullfile(preop_img_path,preop_img_file));
 fname_mni = [PathName Sname '_coor_MNI_' datestr(now,29) '.txt'];
 ntools_elec_savetxt(fname_mni,[name num2cell(elec_mni) label]);
 
@@ -230,8 +230,8 @@ else
     aparc2 = [Subject_path,'/label/',sph_s,'.aparc.a2009s.annot'];
     copyfile(aparc,PathName,'f'); 
     copyfile(aparc2,PathName,'f');
-    NYU_ntools_elec_autoplot(fname_t1,surf_mat,aparc);
-    NYU_ntools_elec_autoplot(fname_t1,surf_mat,aparc2);
+%     NYU_ntools_elec_autoplot(fname_t1,surf_mat,aparc);
+%     NYU_ntools_elec_autoplot(fname_t1,surf_mat,aparc2);
     
     clear surf_brain
 end

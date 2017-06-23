@@ -79,6 +79,8 @@ end
 if exist(fullfile(PathName, FileName),'file')
     fid = fopen(fullfile(PathName, FileName));
     elec_all = textscan(fid,'%s %f %f %f %s');
+    fclose(fid);
+    
     elec_cell = [elec_all{1},num2cell(elec_all{2}),num2cell(elec_all{3}),num2cell(elec_all{4})];
 else
 %     elec_cell = [];

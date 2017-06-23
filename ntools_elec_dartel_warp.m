@@ -26,13 +26,54 @@ end
 
 %% dartel warping
 
+% nte_path = fileparts(which('ntools_elec'));
+% spm_path = fileparts(which('spm'));
+% tpm = strcat(spm_path,'/tpm/',{'grey.nii';'white.nii';'csf.nii'});
+% 
+% % List of open inputs
+% % Segment: Data - cfg_files
+% % Segment: Tissue probability maps - cfg_files
+% % Initial Import: Output Directory - cfg_files
+% % Run DARTEL (existing Templates): Template - cfg_files
+% % Run DARTEL (existing Templates): Template - cfg_files
+% % Run DARTEL (existing Templates): Template - cfg_files
+% % Run DARTEL (existing Templates): Template - cfg_files
+% % Run DARTEL (existing Templates): Template - cfg_files
+% % Run DARTEL (existing Templates): Template - cfg_files
+% % Deformations: Image to base Id on - cfg_files
+% % Deformations: Apply to - cfg_files
+% nrun = 1; % enter the number of runs here
+% jobfile = {[nte_path '/dartel/dartel_warp_job.m']};
+% jobs = repmat(jobfile, 1, nrun);
+% inputs = cell(11, nrun);
+% for crun = 1:nrun
+%     inputs{1, crun} = preop_t1; % Segment: Data - cfg_files
+%     inputs{2, crun} = tpm; % Segment: Tissue probability maps - cfg_files
+%     inputs{3, crun} = cellstr(dartel_dir); % Initial Import: Output Directory - cfg_files
+%     inputs{4, crun} = {[nte_path '/dartel/Template_1.nii']}; % Run DARTEL (existing Templates): Template - cfg_files
+%     inputs{5, crun} = {[nte_path '/dartel/Template_2.nii']}; % Run DARTEL (existing Templates): Template - cfg_files
+%     inputs{6, crun} = {[nte_path '/dartel/Template_3.nii']}; % Run DARTEL (existing Templates): Template - cfg_files
+%     inputs{7, crun} = {[nte_path '/dartel/Template_4.nii']}; % Run DARTEL (existing Templates): Template - cfg_files
+%     inputs{8, crun} = {[nte_path '/dartel/Template_5.nii']}; % Run DARTEL (existing Templates): Template - cfg_files
+%     inputs{9, crun} = {[nte_path '/dartel/Template_6.nii']}; % Run DARTEL (existing Templates): Template - cfg_files
+%     inputs{10, crun} = {[spm_path '/canonical/single_subj_T1.nii']}; % Deformations: Image to base Id on - cfg_files
+%     inputs{11, crun} = vox_img; % Deformations: Apply to - cfg_files
+% end
+% 
+% job_id = cfg_util('initjob',jobs);
+% sts = cfg_util('filljob',job_id,inputs{:});
+% if sts
+%     cfg_util('run',job_id);
+% end
+% cfg_util('deljob',job_id);
+
+%% dartel warping new seg
+
 nte_path = fileparts(which('ntools_elec'));
 spm_path = fileparts(which('spm'));
-tpm = strcat(spm_path,'/tpm/',{'grey.nii';'white.nii';'csf.nii'});
 
 % List of open inputs
-% Segment: Data - cfg_files
-% Segment: Tissue probability maps - cfg_files
+% New Segment: Volumes - cfg_files
 % Initial Import: Output Directory - cfg_files
 % Run DARTEL (existing Templates): Template - cfg_files
 % Run DARTEL (existing Templates): Template - cfg_files
@@ -43,29 +84,25 @@ tpm = strcat(spm_path,'/tpm/',{'grey.nii';'white.nii';'csf.nii'});
 % Deformations: Image to base Id on - cfg_files
 % Deformations: Apply to - cfg_files
 nrun = 1; % enter the number of runs here
-jobfile = {[nte_path '/dartel/dartel_warp_job.m']};
+jobfile = {[nte_path '/dartel/dartel_warp_newseg_job.m']};
 jobs = repmat(jobfile, 1, nrun);
-inputs = cell(11, nrun);
+
+inputs = cell(9, nrun);
 for crun = 1:nrun
-    inputs{1, crun} = preop_t1; % Segment: Data - cfg_files
-    inputs{2, crun} = tpm; % Segment: Tissue probability maps - cfg_files
-    inputs{3, crun} = cellstr(dartel_dir); % Initial Import: Output Directory - cfg_files
-    inputs{4, crun} = {[nte_path '/dartel/Template_1.nii']}; % Run DARTEL (existing Templates): Template - cfg_files
-    inputs{5, crun} = {[nte_path '/dartel/Template_2.nii']}; % Run DARTEL (existing Templates): Template - cfg_files
-    inputs{6, crun} = {[nte_path '/dartel/Template_3.nii']}; % Run DARTEL (existing Templates): Template - cfg_files
-    inputs{7, crun} = {[nte_path '/dartel/Template_4.nii']}; % Run DARTEL (existing Templates): Template - cfg_files
-    inputs{8, crun} = {[nte_path '/dartel/Template_5.nii']}; % Run DARTEL (existing Templates): Template - cfg_files
-    inputs{9, crun} = {[nte_path '/dartel/Template_6.nii']}; % Run DARTEL (existing Templates): Template - cfg_files
-    inputs{10, crun} = {[spm_path '/canonical/single_subj_T1.nii']}; % Deformations: Image to base Id on - cfg_files
-    inputs{11, crun} = vox_img; % Deformations: Apply to - cfg_files
+    inputs{1, crun} = preop_t1; % New Segment: Volumes - cfg_files
+    inputs{2, crun} = {[nte_path '/dartel/Template_1.nii']}; % Run DARTEL (existing Templates): Template - cfg_files
+    inputs{3, crun} = {[nte_path '/dartel/Template_2.nii']}; % Run DARTEL (existing Templates): Template - cfg_files
+    inputs{4, crun} = {[nte_path '/dartel/Template_3.nii']}; % Run DARTEL (existing Templates): Template - cfg_files
+    inputs{5, crun} = {[nte_path '/dartel/Template_4.nii']}; % Run DARTEL (existing Templates): Template - cfg_files
+    inputs{6, crun} = {[nte_path '/dartel/Template_5.nii']}; % Run DARTEL (existing Templates): Template - cfg_files
+    inputs{7, crun} = {[nte_path '/dartel/Template_6.nii']}; % Run DARTEL (existing Templates): Template - cfg_files
+    inputs{8, crun} = {[spm_path '/canonical/single_subj_T1.nii']}; % Deformations: Image to base Id on - cfg_files
+    inputs{9, crun} = vox_img; % Deformations: Apply to - cfg_files
 end
 
-job_id = cfg_util('initjob',jobs);
-sts = cfg_util('filljob',job_id,inputs{:});
-if sts
-    cfg_util('run',job_id);
-end
-cfg_util('deljob',job_id);
+spm_jobman('initcfg');
+spm('defaults', 'PET');
+spm_jobman('serial', jobs, '', inputs{:});
 
 toc
 

@@ -94,8 +94,8 @@ else
         loc_g = (loc_b+l*loc_a)/(1+l);
     end
 
-% Points B & C are in the same row, D is the first one of the column, E
-% is the last one of the column
+% Points B & C are in the same row, D is the first one of the row, E
+% is the last one of the row
     lamda_b = pos_b(2)-1; % how far from B to D
     lamda_c = pos_c(2)-1; % how far from C to D
     l = -lamda_b/lamda_c;
