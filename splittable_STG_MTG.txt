@@ -1,0 +1,2 @@
+middletemporal 3
+superiortemporal 3

@@ -3,7 +3,7 @@ clear all; close all
 % using flirt dof 6 to coregister the postop MRI to preop MRI (usually FS
 % recon T1)
 
-coreg = '/home/halgdev/projects/nyuproj/loc/'; % your localization folder
+coreg = '/home/wangx11/Synology/Loc/'; % your localization folder
 subj = getenv('SUBJECTS_DIR');
 
 t1 = menu('Select the pre-operation image','Pick up my own T1','Select Freesurfer T1.mgz');

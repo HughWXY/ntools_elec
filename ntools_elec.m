@@ -1,6 +1,8 @@
 % function ntools_elec(varargin)
 clear all; close all;
 % check for spm, fsl and freesurfer
+addpath /home/wangx11/matlab/spm8/
+
 if isempty(which('spm')), error('Please install SPM and set up properly.\n'); end
 if isempty(getenv('FSLDIR')),error('Please install FSL and set up properly.\n'); end
 if isempty(getenv('FREESURFER_HOME')), error('Please instll Freesurfer and set up properly\n'); end
@@ -242,8 +244,8 @@ fprintf('\n================================================================\n');
 diary off
 
 %% -------NYU settings: save to a mat file
-matfile = ['/home/halgdev/projects/nyuproj/loc/NY_struct/',Sname,'_',datestr(now,'mmddyy')];
-save(matfile);
+% matfile = ['/home/halgdev/projects/nyuproj/loc/NY_struct/',Sname,'_',datestr(now,'mmddyy')];
+% save(matfile);
 
 % end
 

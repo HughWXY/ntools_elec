@@ -176,7 +176,7 @@ if ~isempty(elec_depth) && ~isempty(elec_bin)
 
     aseg = ntools_elec_load_nifti(aseg_nii);
 
-    [seg_idx, seg_name] = xlsread('/space/mdeh1/5/halgdev/projects/nyuproj/loc/Milan/aparc_aseg_idx_name.xlsx');
+    [seg_idx, seg_name] = xlsread('/home/wangx11/matlab/ntools_elec/aparc_aseg_idx_name.xlsx');
 
     for k=1:length(depth_row)
         note = [];

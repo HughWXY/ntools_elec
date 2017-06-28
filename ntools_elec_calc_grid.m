@@ -84,7 +84,7 @@ for i = 1:length(name)
     % clear the unnecessary data
     radius = []; % reset radius for next grid
     clear elec_temp elec_num elec_proj ini_pos ini_loc;
-	fprintf('Grid stats: itr#: %f mean: %f std:%f\n\n',cell2mat(elec_stats(i,1:3)))
+	fprintf('Grid stats: itr#: %f mean: %f std: %f\n\n',cell2mat(elec_stats(i,1:3)))
 end
 
 %% get the data from the struct
