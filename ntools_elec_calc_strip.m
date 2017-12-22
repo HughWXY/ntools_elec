@@ -32,6 +32,6 @@ data = surf(k,:);
 
 % data = ICP_finite(surf,strip,struct('Optimizer','fminsearch'));
 ini_cell(:,1) = regexprep(ini_cell(:,1),'(?<!\d)(\d)(?!\d)','0$1');
-elec = [ini_cell(:,1), num2cell(data), repmat({'S'},[length(strip),1])];
+elec = [upper(ini_cell(:,1)), num2cell(data), repmat({'S'},[length(strip),1])];
 
 fprintf('Done. (%f seconds) \n\n', toc);

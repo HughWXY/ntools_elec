@@ -171,9 +171,11 @@ if ~isempty(elec_depth) && ~isempty(elec_bin)
     % convert aseg
     aseg_mgz = [getenv('SUBJECTS_DIR'),subj,'/mri/aparc+aseg.mgz'];
     aseg_nii = [cfg.outdir,'/aparc+aseg.nii.gz'];
-    [status,msg] = unix(sprintf('mri_convert --out_orientation %s %s %s',orientation,aseg_mgz,aseg_nii));
-    if status, disp(msg); return; end;
-
+    if ~exist(aseg_nii,'file')
+        [status,msg] = unix(sprintf('mri_convert --out_orientation %s %s %s',orientation,aseg_mgz,aseg_nii));
+        if status, disp(msg); return; end;
+    end
+    
     aseg = ntools_elec_load_nifti(aseg_nii);
 
     [seg_idx, seg_name] = xlsread('/home/wangx11/matlab/ntools_elec/aparc_aseg_idx_name.xlsx');
@@ -203,7 +205,7 @@ if ~isempty(elec_depth) && ~isempty(elec_bin)
         end        
         % find out insula depth elecs
         if sum(strcmp('ctx-lh-insula',strsplit(note,' '))) || ...
-           sum(strcmp('ctx-rh-inslua',strsplit(note,' ')))
+           sum(strcmp('ctx-rh-insula',strsplit(note,' ')))
             insula_elec(end+1) = elec_depth(k,1);
         end
         

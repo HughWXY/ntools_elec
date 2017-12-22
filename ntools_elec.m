@@ -243,6 +243,10 @@ fprintf('\nElectrodes Localization finished for %s',Sname);
 fprintf('\n================================================================\n');
 diary off
 
+% somehow an empty "diary" file was left after diary off
+dfile = fullfile(PathName,'diary');
+if exist(dfile,'file'), delete(dfile); end;
+
 %% -------NYU settings: save to a mat file
 % matfile = ['/home/halgdev/projects/nyuproj/loc/NY_struct/',Sname,'_',datestr(now,'mmddyy')];
 % save(matfile);

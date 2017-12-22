@@ -16,7 +16,7 @@ end
 
 fprintf('Calculating the grids.....\n')
 
-name = regexp(ini_cell(:,1),'[A-Za-z]*[^\d*]','match');
+name = regexpi(ini_cell(:,1),'[A-Za-z]*[^\d*]','match');
 for i=1:length(name)
     ini_name(i) = name{i};
 end
@@ -26,7 +26,7 @@ name = unique(ini_name);
 for i = 1:length(name)
     elec_temp = cell(size(ini_cell));
     %         n = strfind(ini_cell(:,1),name{i});
-    n = regexp(ini_cell(:,1),['^' name{i} '[\d]'],'match');
+    n = regexpi(ini_cell(:,1),['^' name{i} '[\d]'],'match');
     k = 1;
     for l = 1:length(n)
         if ~isempty(n{l})
@@ -35,7 +35,7 @@ for i = 1:length(name)
         end
     end
     elec_temp(all(cellfun(@isempty,elec_temp),2),:) = [];
-    elec_num = regexp(elec_temp(:,1),'[^A-Za-z]*[\d*]','match');
+    elec_num = regexpi(elec_temp(:,1),'[^A-Za-z]*[\d*]','match');
     elec_num(all(cellfun(@isempty,elec_num),2),:) = [];
 %     if length(elec_num)~=2
 %         error('only 2 initial positions are required');
