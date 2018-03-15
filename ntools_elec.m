@@ -1,5 +1,5 @@
 % function ntools_elec(varargin)
-clear all; close all;
+clear; close;
 % check for spm, fsl and freesurfer
 addpath /home/wangx11/matlab/spm8/
 
@@ -110,19 +110,34 @@ elseif strcmpi(ext,'.xls') || strcmpi(ext,'.xlsx')
     [~,~,ini_elec_all] = xlsread(fullfile(PathName,FileName));
 end
 
+%% transform voxel coordinates to ras coordinates if necessary
+coor = cell2mat(ini_elec_all(:,2:4));
+if all(floor(coor(:))==coor(:)) % if all coordinates are integer
+    voxcoor = coor;
+    [~,msg] = unix(sprintf('mri_info --vox2ras %s',[preop_img_path preop_img_file]));
+    vox2ras = str2num(msg);
+    RAScoor = vox2ras*[voxcoor,ones(14,1)]';
+    RAScoor = RAScoor(1:3,:)';
+else
+    RAScoor = coor;
+end
+
+
+
+%%
 [status,msg] = unix(sprintf('mri_info --tkr2scanner %s',[preop_img_path preop_img_file]));
 if ~status,
     transform = str2num(msg);
     scanner2tkr = -transform(1:3,4)'; % tkrRAS = scannerRAS + scanner2tkr
 end
 
-% transform scanner RAS to tkr surface RAS
-tkrRAS = round(cell2mat(ini_elec_all(:,2:4))+ repmat(scanner2tkr,size(ini_elec_all,1),1));
+%% transform scanner RAS to tkr surface RAS
+tkrRAS = round(RAScoor + repmat(scanner2tkr,size(ini_elec_all,1),1));
 tkrRAS = num2cell(tkrRAS);
 ini_elec_all_tkrRAS = ini_elec_all;
 ini_elec_all_tkrRAS(:,2:4) = tkrRAS;
 
-% split elecs by type
+%% split elecs by type
 if 5 == size(ini_elec_all_tkrRAS,2)
     g = strncmpi('G',ini_elec_all_tkrRAS(:,5),1);
     d = strncmpi('D',ini_elec_all_tkrRAS(:,5),1);
@@ -177,9 +192,9 @@ elec_all_scannerRAS = elec_all_tkrRAS - repmat(scanner2tkr,size(elec_all_tkrRAS,
 elec_vox = ntools_elec_savebin(elec_all_scannerRAS,hdr,fname_bin);
 
 %% transform into mni space
-elec_mni = ntools_elec_dartel_warp(fname_bin,fullfile(preop_img_path,preop_img_file));
-fname_mni = [PathName Sname '_coor_MNI_' datestr(now,29) '.txt'];
-ntools_elec_savetxt(fname_mni,[name num2cell(elec_mni) label]);
+% elec_mni = ntools_elec_dartel_warp(fname_bin,fullfile(preop_img_path,preop_img_file));
+% fname_mni = [PathName Sname '_coor_MNI_' datestr(now,29) '.txt'];
+% ntools_elec_savetxt(fname_mni,[name num2cell(elec_mni) label]);
 
 
 %% Save the surf.mat and plot
