@@ -86,7 +86,7 @@ if ~isempty(elec_gs)
     % read annotation
     [~, elec_label, elec_colortable] = fs_read_annotation(annotfile);
     
-    [~, label, colortable] = fs_read_annotation([getenv('SUBJECTS_DIR'),subj,'/label/',hemi,'.aparc.split_STG_MTG.annot']);
+    [~, label, colortable] = fs_read_annotation(fullfile(getenv('SUBJECTS_DIR'),subj,'label',[hemi,'.aparc.split_STG_MTG.annot']));
     
     
     %%   
@@ -169,16 +169,15 @@ if ~isempty(elec_depth) && ~isempty(elec_bin)
     end
     
     % convert aseg
-    aseg_mgz = [getenv('SUBJECTS_DIR'),subj,'/mri/aparc+aseg.mgz'];
-    aseg_nii = [cfg.outdir,'/aparc+aseg.nii.gz'];
-    if ~exist(aseg_nii,'file')
-        [status,msg] = unix(sprintf('mri_convert --out_orientation %s %s %s',orientation,aseg_mgz,aseg_nii));
-        if status, disp(msg); return; end;
-    end
-    
+    aseg_mgz = fullfile(getenv('SUBJECTS_DIR'),subj,'mri','aparc+aseg.mgz');
+    aseg_nii = fullfile(cfg.outdir,'aparc+aseg.nii.gz');
+    [status,msg] = unix(sprintf('mri_convert --out_orientation %s %s %s',orientation,aseg_mgz,aseg_nii));
+    if status, disp(msg); return; end;
+
     aseg = ntools_elec_load_nifti(aseg_nii);
 
-    [seg_idx, seg_name] = xlsread('/home/wangx11/matlab/ntools_elec/aparc_aseg_idx_name.xlsx');
+        
+    [seg_idx, seg_name] = xlsread(fullfile(fileparts(which('ntools_elec')),'aparc_aseg_idx_name.xlsx'));
 
     for k=1:length(depth_row)
         note = [];
@@ -223,7 +222,7 @@ entorhinal_elec{1} = length(entorhinal_elec)-1;
 insula_elec{1} = length(insula_elec)-1;
 amygdala_elec{1} = length(amygdala_elec)-1;
 
-anatomical_text = [PathName,'/',subj,'_T1_',hemi,'_split_STG_MTG_AnatomicalRegions.txt'];
+anatomical_text = fullfile(PathName,[subj,'_T1_',hemi,'_split_STG_MTG_AnatomicalRegions.txt']);
 elec_cell = [elec_gs;elec_depth];
 ntools_elec_savetxt(anatomical_text,elec_cell);
 
