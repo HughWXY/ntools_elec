@@ -1,14 +1,14 @@
 % function ntools_elec(varargin)
 clear; close;
-% check for spm, fsl and freesurfer
-addpath /home/wangx11/matlab/spm8/
 
+% check for spm, fsl and freesurfer
 if isempty(which('spm')), error('Please install SPM and set up properly.\n'); end
 if isempty(getenv('FSLDIR')),error('Please install FSL and set up properly.\n'); end
 if isempty(getenv('FREESURFER_HOME')), error('Please instll Freesurfer and set up properly\n'); end
 
-% get the subject info
+%% get the subject info
 Ssdir=getenv('SUBJECTS_DIR');
+disp('Select the subject FreeSurfer reconstruction folder');
 Subject_path = uigetdir(Ssdir,'Select the subject FreeSurfer reconstruction folder');
 
 if Subject_path==0
@@ -29,8 +29,8 @@ else
 end
 
 %% read the inital text file
-[FileName,PathName] = uigetfile({'*.xlsx';'*.txt';'*.xls'},'Select the initial text file',...
-    '/home/halgdev/projects/nyuproj/loc/');% NYU settings
+disp('Select the initial text file');
+[FileName,PathName] = uigetfile({'*.xlsx';'*.txt';'*.xls'},'Select the initial text file',pwd);
 jj = strfind(PathName,'/');
 Sname = PathName(jj(end-1)+1:jj(end)-1);
 
@@ -39,7 +39,9 @@ Sname = [Sname '_' ss2];
 disp(Sname)
 
 %% read the removed elecs text file
-[removed_elec_file, removed_elec_path] = uigetfile({'*.xlsx';'*.txt';'*.xls'},'Select the removed elec text file',PathName);
+disp('Select the removed elec text file');
+[removed_elec_file, removed_elec_path] = uigetfile({'*.xlsx';'*.txt';'*.xls'},...
+    'Select the removed elec text file',PathName);
 
 if isnumeric(removed_elec_file) || isempty(removed_elec_file)
     removed_elec = [];
@@ -60,11 +62,13 @@ else
     removed_elec = regexprep(removed_elec,'(?<!\d)(\d)(?!\d)','0$1');
 end
 %%
-[preop_img_file,preop_img_path] = uigetfile({'*.nii.gz';'*.nii';'*.img'},'Select the T1 pre-operation image: ',PathName);
+disp('Select the T1 pre-operation image');
+[preop_img_file,preop_img_path] = uigetfile({'*.nii.gz';'*.nii';'*.img'},...
+    'Select the T1 pre-operation image',PathName);
     
 % move other files to backup folder
 backup_dir = [PathName,'backup_',datestr(now,29)];
-if ~exist(backup_dir,'dir'), mkdir(backup_dir); end;
+if ~exist(backup_dir,'dir'), mkdir(backup_dir); end
 all_files = dir(PathName);
 all_files_isdir = [all_files(:).isdir];
 all_files_name = {all_files(:).name};
@@ -75,11 +79,11 @@ idx = ~cellfun(@isempty,strfind(all_files_name,'.log'))+...
     ~cellfun(@isempty,strfind(all_files_name,'.pptx'))+...
     ~cellfun(@isempty,strfind(all_files_name,FileName))+...
     ~cellfun(@isempty,strfind(all_files_name,preop_img_file))+...
-    ~cellfun(@isempty,strfind(all_files_name,'aparc'))+... % NYU settings: keep aparc.annot file
-    ~cellfun(@isempty,strfind(all_files_name,'removed'))+... % NYU settings: keep removed elec file
-    ~cellfun(@isempty,strfind(all_files_name,'missing')); % NYU settings: keep the missing_coor.txt
+    ~cellfun(@isempty,strfind(all_files_name,'aparc'))+... % keep aparc.annot file
+    ~cellfun(@isempty,strfind(all_files_name,'removed'))+... % keep removed elec file
+    ~cellfun(@isempty,strfind(all_files_name,'missing')); % keep the missing_coor.txt
 all_files_name = all_files_name(~logical(idx));
-for i=1:length(all_files_name), movefile([PathName, all_files_name{i}],backup_dir,'f'); end;
+for i=1:length(all_files_name), movefile([PathName, all_files_name{i}],backup_dir,'f'); end
     
 % start diary 
 diary_file = [PathName,'localization_process_',datestr(now,29),'.log'];
@@ -103,7 +107,8 @@ scale = mean(hdr.pixdim(2:4));
 if strcmpi(ext,'.txt') 
     fid = fopen([PathName, FileName]);
     ini_elec_all = textscan(fid,'%s %f %f %f %s','CommentStyle','%'); 
-    ini_elec_all = [ini_elec_all{1},num2cell(ini_elec_all{2}),num2cell(ini_elec_all{3}),num2cell(ini_elec_all{4}),ini_elec_all{5}];
+    ini_elec_all = [ini_elec_all{1},num2cell(ini_elec_all{2}),...
+                    num2cell(ini_elec_all{3}),num2cell(ini_elec_all{4}),ini_elec_all{5}];
     fclose(fid);
     
 elseif strcmpi(ext,'.xls') || strcmpi(ext,'.xlsx')
@@ -114,9 +119,9 @@ end
 coor = cell2mat(ini_elec_all(:,2:4));
 if all(floor(coor(:))==coor(:)) % if all coordinates are integer
     voxcoor = coor;
-    [~,msg] = unix(sprintf('mri_info --vox2ras %s',[preop_img_path preop_img_file]));
+    [~,msg] = unix(sprintf('mri_info --vox2ras %s',fullfile(preop_img_path,preop_img_file)));
     vox2ras = str2num(msg);
-    RAScoor = vox2ras*[voxcoor,ones(14,1)]';
+    RAScoor = vox2ras*[voxcoor,ones(size(voxcoor,1),1)]';
     RAScoor = RAScoor(1:3,:)';
 else
     RAScoor = coor;
@@ -125,8 +130,8 @@ end
 
 
 %%
-[status,msg] = unix(sprintf('mri_info --tkr2scanner %s',[preop_img_path preop_img_file]));
-if ~status,
+[status,msg] = unix(sprintf('mri_info --tkr2scanner %s',fullfile(preop_img_path,preop_img_file)));
+if ~status
     transform = str2num(msg);
     scanner2tkr = -transform(1:3,4)'; % tkrRAS = scannerRAS + scanner2tkr
 end
@@ -168,7 +173,10 @@ ntools_elec_outer_brain(Subject_path)
 
 % calculate grids
 [elec_grid_tkrRAS,grid_stats] = ntools_elec_calc_grid(ini_grid_tkrRAS,Subject_path,scale,[]);
-if ~isempty(removed_elec),elec_grid_tkrRAS(ismember(elec_grid_tkrRAS(:,1),removed_elec),:) = []; end;
+% remove the electrodes that were cut off during operation
+if ~isempty(removed_elec)
+    elec_grid_tkrRAS(ismember(elec_grid_tkrRAS(:,1),removed_elec),:) = []; 
+end
 
 %%
 % calculate depth elecs
@@ -217,13 +225,13 @@ if strcmp(sph_s,'both')
 
     % split the text file into lh/rh hemi, then save with
     % NYU_ntools_elec_autoplot
-
-%     ntools_elec_plot(fname_t1,{lh_mat,rh_mat},'showlabel',1,'saveimg',1,'aparc',[]); % NYU settings: auto save images
     
-    aparc = {[Subject_path,'/label/lh.aparc.split_STG_MTG.annot'];[Subject_path,'/label/rh.aparc.split_STG_MTG.annot']}; % NYU settings: auto save images with aparc
-    aparc2 = {[Subject_path,'/label/lh.aparc.a2009s.annot'];[Subject_path,'/label/rh.aparc.a2009s.annot']};
+    aparc = {[Subject_path,'/label/lh.aparc.split_STG_MTG.annot'];...
+             [Subject_path,'/label/rh.aparc.split_STG_MTG.annot']}; 
+    aparc2 = {[Subject_path,'/label/lh.aparc.a2009s.annot'];...
+              [Subject_path,'/label/rh.aparc.a2009s.annot']};
     if ~exist(aparc{1},'file') || ~exist(aparc{2},'file')
-        hugh_mris_divide_parcellation(Sdir)
+        fs_mris_divide_parcellation(Sdir)
     end
         
     copyfile(aparc{1},PathName,'f');
@@ -243,7 +251,7 @@ else
     
     % NYU settings: auto save images with/without aparc
     aparc = [Subject_path,'/label/',sph_s,'.aparc.split_STG_MTG.annot']; 
-    if ~exist(aparc,'file'), hugh_mris_divide_parcellation(Sdir); end;
+    if ~exist(aparc,'file'), fs_mris_divide_parcellation(Sdir); end
     aparc2 = [Subject_path,'/label/',sph_s,'.aparc.a2009s.annot'];
     copyfile(aparc,PathName,'f'); 
     copyfile(aparc2,PathName,'f');
@@ -260,7 +268,7 @@ diary off
 
 % somehow an empty "diary" file was left after diary off
 dfile = fullfile(PathName,'diary');
-if exist(dfile,'file'), delete(dfile); end;
+if exist(dfile,'file'), delete(dfile); end
 
 %% -------NYU settings: save to a mat file
 % matfile = ['/home/halgdev/projects/nyuproj/loc/NY_struct/',Sname,'_',datestr(now,'mmddyy')];

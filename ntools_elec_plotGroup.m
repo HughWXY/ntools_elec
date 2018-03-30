@@ -1,6 +1,6 @@
 function ntools_elec_plotGroup(varargin)
 
-% ntools_elec_plot(elec_file,surf_file,'labelshow',0/1,'genimg',0/1)
+% ntools_elec_plotGroup(elec_file,surf_file,'labelshow',0/1,'genimg',0/1)
 %
 % a stand-alone program that shows ieeg electrodes on the pial surface and
 % save the images into textfile folder/images/. Default saving name is
@@ -27,6 +27,9 @@ function ntools_elec_plotGroup(varargin)
 %     ntools_elec_plot(textfilename,lh.mat,'plot',[2,3,9],'labelshow',1,'genimg',1,'groupname','seizure onset');
 %
 % by  Hugh Wang, Xiuyuan.Wang@nyumc.org, Aug 13th, 2013
+% 
+% change colorbar properties according to MATLAB R2014b colorbar object
+% modified by Hugh Wang, July 27th, 2016
 
 %% Get the elec info
 if nargin==0
@@ -87,6 +90,7 @@ end
 %% Separate the elecs by category numbers
 catnum = elec_all{5};
 uninum = unique(catnum,'sorted');
+%uninum = unique(catnum);
 cmap = jet(length(uninum));
 
 
@@ -134,19 +138,26 @@ for i=1:length(plt)
 end
 
 colormap(cmap);
-cbar = colorbar('YTickLabel',{uninum},'Clim',[uninum(1),uninum(end)]);
-ytick_range = get(cbar,'YLim');
+% cbar = colorbar('YTickLabel',{uninum},'Clim',[uninum(1),uninum(end)]);
+% ytick_range = get(cbar,'YLim');
+% interval = (ytick_range(2)-ytick_range(1))/(length(uninum));
+% ytick = [ytick_range(1):interval:ytick_range(2)]+interval/2;
+% set(cbar,'YTick',ytick);
+
+% starting 2014b, colorbar returns a colorbar object instead of axis
+cbar = colorbar('TickLabels',num2cell(uninum)); 
+ytick_range = get(cbar,'Limits');
 interval = (ytick_range(2)-ytick_range(1))/(length(uninum));
 ytick = [ytick_range(1):interval:ytick_range(2)]+interval/2;
-set(cbar,'YTick',ytick);
+set(cbar,'Ticks',ytick);
 
 hold off;
 
 %% save images
 
 if genimg==1
-    if ~exist([PathName 'images/'],'dir')
-        mkdir([PathName 'images/']);
+    if ~exist([PathName '\images\'],'dir')
+        mkdir([PathName '\images\']);
     end
     
     if labelshow==1
@@ -155,37 +166,37 @@ if genimg==1
         label = [];
     end
     
-    format = 'png';
+    format = 'fig';
     if strcmp(sph,'lh')
         view(270, 0);
-        saveas(gcf,[PathName,'images/',Pname,space,showpart,'_lateral_',sph,label],format);
+        saveas(gcf,[PathName,'\images\',Pname,space,showpart,'_lateral_',sph,label],format);
         view(90,0);
-        saveas(gcf,[PathName,'images/',Pname,space,showpart,'_mesial_',sph,label],format);
+        saveas(gcf,[PathName,'\images\',Pname,space,showpart,'_mesial_',sph,label],format);
         
     elseif strcmp(sph,'rh')
         view(270, 0);
-        saveas(gcf,[PathName,'images/',Pname,space,showpart,'_mesial_',sph,label],format);
+        saveas(gcf,[PathName,'\images\',Pname,space,showpart,'_mesial_',sph,label],format);
         view(90,0);
-        saveas(gcf,[PathName,'images/',Pname,space,showpart,'_lateral_',sph,label],format);
+        saveas(gcf,[PathName,'\images\',Pname,space,showpart,'_lateral_',sph,label],format);
         
     elseif strcmp(sph,'both')
         view(270, 0);
-        saveas(gcf,[PathName,'images/',Pname,space,showpart,'_left_',sph,label],format);
+        saveas(gcf,[PathName,'\images\',Pname,space,showpart,'_left_',sph,label],format);
         view(90,0);
-        saveas(gcf,[PathName,'images/',Pname,space,showpart,'_right_',sph,label],format);
+        saveas(gcf,[PathName,'\images\',Pname,space,showpart,'_right_',sph,label],format);
     end
     view(0,0);
-    saveas(gcf,[PathName,'images/',Pname,space,showpart,'_posterior_',sph,label],format);
+    saveas(gcf,[PathName,'\images\',Pname,space,showpart,'_posterior_',sph,label],format);
 
     view(180,0);
-    saveas(gcf,[PathName,'images/',Pname,space,showpart,'_frontal_',sph,label],format);
+    saveas(gcf,[PathName,'\images\',Pname,space,showpart,'_frontal_',sph,label],format);
 
     view(90,90);
-    saveas(gcf,[PathName,'images/',Pname,space,showpart,'_dorsal_',sph,label],format);
+    saveas(gcf,[PathName,'\images\',Pname,space,showpart,'_dorsal_',sph,label],format);
 
     view(90,-90);
     set(light,'Position',[1 0 -1]);
-    saveas(gcf,[PathName,'images/',Pname,space,showpart,'_ventral_',sph,label],format);
+    saveas(gcf,[PathName,'\images\',Pname,space,showpart,'_ventral_',sph,label],format);
 else 
     return;
 end
@@ -261,7 +272,7 @@ set(light,'Position',[-1 0 1]);
     elseif strcmp(sph,'both')
         view(90,90);
     end
-set(gcf, 'color','black','InvertHardCopy', 'off');
+set(gcf, 'color','white','InvertHardCopy', 'off');
 axis tight;
 axis equal;
 end
