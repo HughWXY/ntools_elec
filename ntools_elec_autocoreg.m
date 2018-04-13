@@ -67,7 +67,7 @@ unix(sprintf('flirt -in %s -ref %s -out %s -dof 6 -interp trilinear',elecT1_nii,
 
 preop_brain = fullfile(elecpath,[name_preop,'_brain.nii.gz']);
 preop_brain_mask = fullfile(elecpath,[name_preop,'_brain_mask.nii.gz']);
-unix(sprintf('bet %s %s -f 0.5 -g 0 -m',preop_nii,preop_brain),'-echo');
+unix(sprintf('bet %s %s -B -f 0.5 -g 0 -m',preop_nii,preop_brain),'-echo');
 
 if ~isempty(elecT2)
     [~,name_elecT2] = fileparts(elecT2_nii);
@@ -79,7 +79,7 @@ end
 if ~isempty(aseg)
     % remove cerebellum
     cerebellum = [elecpath,'cerebellum.nii.gz'];
-    unix(sprintf('mri_binarize --i %s --match 6 7 8 45 46 47 170 171 172 173 174 175--o %s',aseg_nii,cerebellum));
+    unix(sprintf('mri_binarize --i %s --match 6 7 8 45 46 47 16 --o %s',aseg_nii,cerebellum));
     % dialte cerebellum
     unix(sprintf('fslmaths %s -dilM %s',cerebellum,cerebellum));
     % inverse mask
