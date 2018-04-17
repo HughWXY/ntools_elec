@@ -53,7 +53,7 @@ The idea here is to localize the following:
 
 2. If you want to use 3 initial points for the grid, make sure these 3 points can shape a rectangular triangle, and the perpendicular foot has to be in the middle of the three.
 
-3. If there are 2 grids labeled with the same letter, or one grid broken up into several parts, treat them as separate grids and label them differently, for example splitting GA1~64 as GA1~32 and GB1~32 (which is actually GA33~64), adjusting the numbering of the rest grids. After a final image is created, edit the output electrodes coordinates text file and manually adjust each electrode to its original label according to the sketch.
+3. If there are 2 grids labeled with the same letter, or one grid broken up into several parts, treat them as separate grids and label them differently, for example splitting GA1 to GA64 as GA1 to GA32 and GB1 to GB32 (which is actually GA33~64), adjusting the numbering of the rest grids. After a final image is created, edit the output electrodes coordinates text file and manually adjust each electrode to its original label according to the sketch.
 
 An example of initial electrodes coordinates text:
 
