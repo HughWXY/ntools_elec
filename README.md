@@ -107,7 +107,7 @@ lh.aparc.split_STG_MTG.annot: Freesurfer subject Desikan Atlas with split (rostr
 
 [subj]\_coor\_T1\_[date].txt: electrode coordinates in subject SURFACE space (**not fit with T1.nii.gz**)
 
-[subj]\_elec\_bin\_T1\_[date].nii.gz: electrode image in subject preop T1 VOLUME space(**not fit with *\_pial\_surf.mat**), with intensity corresponding to the row number of coor_T1 text file, indicating the electrode labels. The coordinates of electrodes from elec_bin is usually different from the coor_T1 text file, but this difference is consistent across electrodes, which is the shift between volume space and surface space.
+[subj]\_elec\_bin\_T1\_[date].nii.gz: electrode image in subject preop T1 VOLUME space(**not fit with \_pial\_surf.mat**), with intensity corresponding to the row number of coor_T1 text file, indicating the electrode labels. The coordinates of electrodes from elec_bin is usually different from the coor_T1 text file, but this difference is consistent across electrodes, which is the shift between volume space and surface space.
 
 [subj]\_lh\_pial\_surf.mat: subject triangulated surface mat file
 
