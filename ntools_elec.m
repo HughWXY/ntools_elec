@@ -95,7 +95,7 @@ fprintf('Freesurfer Recon dir: %s\n',Subject_path);
 fprintf('Initial location text file: %s\n',fullfile(PathName,FileName));
 
 % read in preop T1
-hdr = ntools_elec_load_nifti([preop_img_path preop_img_file],1);
+hdr = ntools_elec_load_nifti(fullfile(preop_img_path,preop_img_file),1);
 if ~isequal(hdr.pixdim(2),hdr.pixdim(3),hdr.pixdim(4))
     warning('T1 voxel mm dimensions not equal. Will affect the accuracy of distance calculation');
 end
