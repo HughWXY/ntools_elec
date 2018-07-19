@@ -72,7 +72,7 @@ else
   gzipped = -1 ;
 end
 
-hdr = load_nifti_hdr(niftifile);
+hdr = fs_load_nifti_hdr(niftifile);
 if(isempty(hdr)) 
   if(gzipped >=0) unix(sprintf('rm %s', niftifile)); end
   return; 
