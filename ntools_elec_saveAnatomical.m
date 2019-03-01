@@ -50,10 +50,10 @@ elec_depth = elec_cell(d,:);
 
 %% process with G/S
 
-PathName = fileparts(elec_text);if isempty(PathName), PathName = '.'; end;
+PathName = fileparts(elec_text);if isempty(PathName), PathName = '.'; end
 cfg = [];
 cfg.outdir = [PathName '/labels'];
-if ~exist(cfg.outdir,'dir'), mkdir(cfg.outdir); end;
+if ~exist(cfg.outdir,'dir'), mkdir(cfg.outdir); end
     
 hippo_elec = cell(1);
 entorhinal_elec = cell(1);
@@ -69,7 +69,7 @@ if ~isempty(elec_gs)
     [surf] = fs_calc_triarea(surf);
     surf.coords = surf.vertices;
     
-    PathName = fileparts(elec_text); if isempty(PathName), PathName = '.'; end;
+    PathName = fileparts(elec_text); if isempty(PathName), PathName = '.'; end
     cfg = [];
     cfg.subject = subj;
     cfg.surf= surf;
@@ -112,7 +112,7 @@ if ~isempty(elec_gs)
         
         % remove 0 index
         aparc_table_idx = aparc_table_idx(aparc_table_idx>0);
-        if isempty(aparc_table_idx), continue; end;
+        if isempty(aparc_table_idx), continue; end
         
         aparc_idx_uniq = unique(aparc_table_idx);
         for j=1:length(aparc_idx_uniq)
@@ -161,7 +161,7 @@ if ~isempty(elec_depth) && ~isempty(elec_bin)
         if ~strcmpi(orientation,'RAS') && ~strcmpi(orientation,'LAS')
             cont = input(sprintf('The orientation of the elec_bin is %s, this is unusual. Continue? [y/n]: ',...
                 orientation),'s');
-            if strcmpi(cont,'n'), return; end;
+            if strcmpi(cont,'n'), return; end
         end
     else
         disp('orientation is not available. please check elec_bin image');
@@ -172,7 +172,7 @@ if ~isempty(elec_depth) && ~isempty(elec_bin)
     aseg_mgz = fullfile(getenv('SUBJECTS_DIR'),subj,'mri','aparc+aseg.mgz');
     aseg_nii = fullfile(cfg.outdir,'aparc+aseg.nii.gz');
     [status,msg] = unix(sprintf('mri_convert --out_orientation %s %s %s',orientation,aseg_mgz,aseg_nii));
-    if status, disp(msg); return; end;
+    if status, disp(msg); return; end
 
     aseg = ntools_elec_load_nifti(aseg_nii);
 
@@ -185,7 +185,7 @@ if ~isempty(elec_depth) && ~isempty(elec_bin)
         seg_num = aseg.vol(hdr.vol==depth_row(k));
         
         % continue if seg_num is empty
-        if isempty(seg_num), elec_depth(k,5) = {[]}; continue; end;
+        if isempty(seg_num), elec_depth(k,5) = {[]}; continue; end
         
         unique_seg_num = unique(seg_num);
         for m=1:length(unique_seg_num)

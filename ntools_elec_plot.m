@@ -52,6 +52,10 @@ function ntools_elec_plot(varargin)
 %
 % modified on Jan 13th, 2014 by Hugh
 % more optional inputs 'plot' and 'aparc'
+% 
+% modified on Feb 11th, 2019 by Hugh
+% support for experimental grid
+
 
 %% Get the elec info
 if nargin==0
@@ -92,9 +96,9 @@ end
 b = strfind(FileName,'_');
 Pname = FileName(1:b(1)-1);
 
-if ~isempty(strfind(upper(FileName),'T1'))
+if contains(upper(FileName),'T1')
     space = '_T1_';
-elseif ~isempty(strfind(upper(FileName),'MNI'))
+elseif contains(upper(FileName),'MNI')
     space = '_MNI_';
 else
     space = '_';
@@ -115,11 +119,13 @@ if isempty(char(elec_all{5}(:)))
 else
     g = strncmpi('G',elec_all{5},1);
     d = strncmpi('D',elec_all{5},1);
+    eg = strncmpi('EG',elec_all{5},1);
 end
 
 elec_grid = elec_cell(g,:);
+elec_expGrid = elec_cell(eg,:);
 elec_depth = elec_cell(d,:);
-elec_cell(or(g,d),:) = [];
+elec_cell(logical(g+d+eg),:) = [];
 
 
 %% Plot the elecs
@@ -182,6 +188,28 @@ end
 if (isequal(plt,1) || strcmpi(plt,'G')) && ~isempty(elec_grid)
     showpart = 'G';
     nyu_plot(surf_brain,sph,cell2mat(elec_grid(:,2:4)),char(elec_grid(:,1)),'r',labelshow,aparc_annot);
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% experimental Grid
+    if ~isempty(elec_expGrid)
+        hold on;
+        expGrid_radius = 0.5;
+        
+        for i=1:size(elec_expGrid,1)
+            if isempty(aparc_annot)
+                expGrid_color = 'm';
+            else % re-define strip color if plot with aparc
+                expGrid_color = 'w';
+            end            
+            
+            plotSpheres(elec_expGrid{i,2},elec_expGrid{i,3},elec_expGrid{i,4},expGrid_radius,expGrid_color);
+            if labelshow==1
+                [xx, yy, zz] = adjust_elec_label([elec_expGrid{i,2:4}],expGrid_radius); % default radius = 2
+                text('Position',[xx yy zz],'String',elec_expGrid(i,1),'Color','w','VerticalAlignment','top');
+            end    
+        end
+        hold off;
+    end
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 elseif (isequal(plt,2) || strcmpi(plt,'S')) && ~isempty(elec_cell)
     showpart = 'S';
     nyu_plot(surf_brain,sph,cell2mat(elec_cell(:,2:4)),char(elec_cell(:,1)),'b',labelshow,aparc_annot);
@@ -193,6 +221,29 @@ elseif (isequal(plt,4) || strcmpi(plt,'GS')) && ~isempty(elec_grid) && ~isempty(
     elec = cell2mat(elec_cell(:,2:4));
     elec_name = char(elec_cell(:,1));
     nyu_plot(surf_brain,sph,cell2mat(elec_grid(:,2:4)),char(elec_grid(:,1)),'r',labelshow,aparc_annot); hold on;
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% experimental Grid
+    if ~isempty(elec_expGrid)
+        hold on;
+        expGrid_radius = 0.5;
+        
+        for i=1:size(elec_expGrid,1)
+            if isempty(aparc_annot)
+                expGrid_color = 'm';
+            else % re-define strip color if plot with aparc
+                expGrid_color = 'w';
+            end
+            
+            plotSpheres(elec_expGrid{i,2},elec_expGrid{i,3},elec_expGrid{i,4},expGrid_radius,expGrid_color);
+            if labelshow==1
+                [xx, yy, zz] = adjust_elec_label([elec_expGrid{i,2:4}],expGrid_radius); % default radius = 2
+                text('Position',[xx yy zz],'String',elec_expGrid(i,1),'Color','w','VerticalAlignment','top');
+            end    
+        end
+        hold off;        
+    end    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
     for i=1:size(elec,1)
         if isempty(aparc_annot)
             stripcolor = 'b';
@@ -407,7 +458,7 @@ end
 %% plotSpheres
 function [shand]=plotSpheres(spheresX, spheresY, spheresZ, spheresRadius,varargin)
 
-if nargin>4,
+if nargin>4
     col=varargin{:};
 end
 

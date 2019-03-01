@@ -53,7 +53,7 @@ clut_file=sprintf('%s/%s_%s_CLUT.txt',cfg.outdir,hemi,subject);
 
 %begin writing the CLUT
 fidclut=fopen(clut_file,'w');
-if (fidclut == -1),
+if (fidclut == -1)
      error(sprintf('ERROR: could not open %s for writing, check path and permissions',clut_file));
 end
 fprintf(fidclut,'#$Id %s_%s_CLUT.txt, v 1.00 %s$\n\n',hemi,subject,date);
@@ -81,7 +81,7 @@ for i=1:size(elec_coords,1)
             surf.coords(cindex,2),...
             surf.coords(cindex,3));
         for nvert=1:length(surf.nbrs(cindex,:))
-            if surf.nbrs(cindex,nvert) > 0, 
+            if surf.nbrs(cindex,nvert) > 0
                 fprintf(fid,'%g  %g  %g  %g 0.000000\n',...
                     surf.nbrs(cindex,nvert)-1,...
                     surf.coords(surf.nbrs(cindex,nvert),1),...
@@ -108,5 +108,5 @@ annotfile = [cfg.outdir,'/',hemi,'.iEEG_electrodes.annot'];
 cmd=sprintf('mris_label2annot --subject %s --hemi %s --ctab %s --annot-path %s --ldir %s --no-unknown',...
     subject,hemi,clut_file,annotfile,cfg.outdir);
 [status, msg] = unix(cmd);
-if status, disp(msg); return; end;
+if status, disp(msg); return; end
 

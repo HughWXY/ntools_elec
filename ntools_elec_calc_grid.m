@@ -17,10 +17,12 @@ end
 fprintf('Calculating the grids.....\n')
 
 name = regexpi(ini_cell(:,1),'[A-Za-z]*[^\d*]','match');
+type = upper(unique(ini_cell(:,5),'stable'));
+
 for i=1:length(name)
     ini_name(i) = name{i};
 end
-name = unique(ini_name);
+name = unique(ini_name,'stable');
 
 % get the grid initial positions by name
 for i = 1:length(name)
@@ -93,6 +95,7 @@ for i = 1:length(name)
     for j = 1:size(elec_temp2.(char(name{i})),1)
         name_num(l) = cellstr(sprintf('%s%.2d',char(name{i}),j));
         elec_pos(l,:) = elec_temp2.(char(name{i}))(j,:);
+        elec_type(l) = type(i);
         l = l+1;
     end
 end
@@ -101,6 +104,12 @@ elec = cell(size(name_num,2),5);
 elec(:,1) = upper(name_num)';
 elec(:,2:4) = num2cell(elec_pos);
 
-elec(:,5) = repmat({'G'},[l-1 1]);
+% elec(:,5) = repmat({'G'},[l-1 1]);
+elec(:,5) = elec_type;
 
 fprintf('Done \n\n');
+
+
+
+
+

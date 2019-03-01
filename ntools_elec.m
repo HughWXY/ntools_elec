@@ -1,4 +1,11 @@
 % function ntools_elec(varargin)
+
+% update on 2019/02/11: remove the support for 4-column style initial excel
+% input. All electrodes must have a type (G/S/D/EG) in the 5th column
+
+
+
+
 clear; close;
 
 % check for spm, fsl and freesurfer
@@ -143,17 +150,14 @@ ini_elec_all_tkrRAS = ini_elec_all;
 ini_elec_all_tkrRAS(:,2:4) = tkrRAS;
 
 %% split elecs by type
-if 5 == size(ini_elec_all_tkrRAS,2)
-    g = strncmpi('G',ini_elec_all_tkrRAS(:,5),1);
-    d = strncmpi('D',ini_elec_all_tkrRAS(:,5),1);
-else
-    g = strncmpi('G',ini_elec_all_tkrRAS(:,1),1);
-    d = strncmpi('D',ini_elec_all_tkrRAS(:,1),1);
-end
 
-ini_grid_tkrRAS = ini_elec_all_tkrRAS(g,:);
+g = strncmpi('G',ini_elec_all_tkrRAS(:,5),1);
+d = strncmpi('D',ini_elec_all_tkrRAS(:,5),1);
+eg = strncmpi('EG',ini_elec_all_tkrRAS(:,5),1); % experimental grid having special size
+
+ini_grid_tkrRAS = [ini_elec_all_tkrRAS(g,:); ini_elec_all_tkrRAS(eg,:)];
 ini_depth_tkrRAS = ini_elec_all_tkrRAS(d,:);
-ini_elec_all_tkrRAS(or(g,d),:) = [];
+ini_elec_all_tkrRAS(logical(g+d+eg),:) = [];
 ini_strip_tkrRAS = ini_elec_all_tkrRAS;
 
 
