@@ -59,17 +59,22 @@ for i = 1:length(name)
     end
     
     % input the size of the grid
-    a = menu(['What is the size of the grid ',name{i},' ?'], '8*8', '4*8', '4*5','2*8','manually input');
-    if a==1
-        s = [8,8];
-    elseif a==2
-        s = [4,8];
-    elseif a==3
-        s = [4,5];
-    elseif a==4
-        s = [2,8];
+    if ~isequal('MG',type{i})
+        a = menu(['What is the size of the grid ',name{i},' ?'], '8*8', '4*8', '4*5','2*8','manually input');
+        if a==1
+            s = [8,8];
+        elseif a==2
+            s = [4,8];
+        elseif a==3
+            s = [4,5];
+        elseif a==4
+            s = [2,8];
+        else
+            s = input(['Please input the size of the grid ',name{i},' [row column]: ']);
+        end
     else
-        s = input(['Please input the size of the grid ',name{i},' [row column]: ']);
+        s = [8,8]; % for PMT model 2110-128-021 only 8*8 is supported
+        radius = 10;
     end
     
     % check for radius
@@ -97,15 +102,15 @@ for i = 1:length(name)
         elec_pos(l,:) = elec_temp2.(char(name{i}))(j,:);
         elec_type(l) = type(i);
         l = l+1;
-    end
+    end   
 end
 
 elec = cell(size(name_num,2),5);
 elec(:,1) = upper(name_num)';
 elec(:,2:4) = num2cell(elec_pos);
-
-% elec(:,5) = repmat({'G'},[l-1 1]);
 elec(:,5) = elec_type;
+
+elec = ntools_elec_calc_mesogrid(elec);
 
 fprintf('Done \n\n');
 

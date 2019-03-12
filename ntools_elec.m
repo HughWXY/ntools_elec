@@ -153,11 +153,13 @@ ini_elec_all_tkrRAS(:,2:4) = tkrRAS;
 
 g = strncmpi('G',ini_elec_all_tkrRAS(:,5),1);
 d = strncmpi('D',ini_elec_all_tkrRAS(:,5),1);
-eg = strncmpi('EG',ini_elec_all_tkrRAS(:,5),1); % experimental grid having special size
 
-ini_grid_tkrRAS = [ini_elec_all_tkrRAS(g,:); ini_elec_all_tkrRAS(eg,:)];
+eg = strncmpi('EG',ini_elec_all_tkrRAS(:,5),2); % experimental grid having special size
+mg = strncmpi('MG',ini_elec_all_tkrRAS(:,5),2); % meso grid PMT model 2110-128-021
+
+ini_grid_tkrRAS = [ini_elec_all_tkrRAS(g,:);ini_elec_all_tkrRAS(mg,:); ini_elec_all_tkrRAS(eg,:)];
 ini_depth_tkrRAS = ini_elec_all_tkrRAS(d,:);
-ini_elec_all_tkrRAS(logical(g+d+eg),:) = [];
+ini_elec_all_tkrRAS(logical(g+d+eg+mg),:) = [];
 ini_strip_tkrRAS = ini_elec_all_tkrRAS;
 
 

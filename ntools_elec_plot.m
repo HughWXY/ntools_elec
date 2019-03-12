@@ -59,7 +59,7 @@ function ntools_elec_plot(varargin)
 
 %% Get the elec info
 if nargin==0
-    [FileName,PathName] = uigetfile('*.txt','Select the electrodes text file','/home/halgdev/projects/nyuproj/loc/'); % NYU settings
+    [FileName,PathName] = uigetfile('*.txt','Select the electrodes text file',pwd'); 
     [surfname, surfpath] = uigetfile('*.mat','Select the patient brain surf',PathName,'MultiSelect','on');
     surf = strcat(surfpath,surfname);      
 elseif nargin>=2
@@ -119,7 +119,7 @@ if isempty(char(elec_all{5}(:)))
 else
     g = strncmpi('G',elec_all{5},1);
     d = strncmpi('D',elec_all{5},1);
-    eg = strncmpi('EG',elec_all{5},1);
+    eg = strncmpi('EG',elec_all{5},2);
 end
 
 elec_grid = elec_cell(g,:);
