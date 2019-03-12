@@ -172,3 +172,17 @@ e.g.:
 Output:
 
 [subj]\_T1\_lh(rh)\_split\_STG\_MTG\_AnatomicalRegions.txt: anatomical percentage coverage of each electrode, using aparc.split_STG_MTG.annot in default
+
+### other types of grid supported
+
+There are two more types of grid supported in ntools_elec: EG and MG
+EG stands for experimental grid, usually in square or rectangular shape but the inter-electrode distance is much smaller than a regular grid as well as the size of the electrode. If the initial grid points are labeled 'EG' in the 5th column, it will be plotted as 1mm diameter sphere in magenta color. 
+
+![Picture_text_group](images/NY705_T1_GS_lateral_lh.png)
+
+MG stands for meso grid, which is PMT model 2110-128-021, an 8x8 regular grid with another 64 channels in between regular electrodes. Users only need to select the initial positions for the regular grid and the script will calculate for all the rest ones.
+
+![Picture_text_group](images/NY717_T1_GS_lateral_lh.png)
+
+
+
