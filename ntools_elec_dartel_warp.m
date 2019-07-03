@@ -4,7 +4,7 @@ fprintf('start DARTEL warping process......\n')
 
 tic
 [preop_t1_path,preop_t1_img,ext] = fileparts(preop_t1);
-dartel_dir = [preop_t1_path '/dartel/'];
+dartel_dir = fullfile(preop_t1_path,'dartel');
 
 if ~exist(dartel_dir,'dir')
     mkdir(dartel_dir);

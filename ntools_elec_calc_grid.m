@@ -17,12 +17,13 @@ end
 fprintf('Calculating the grids.....\n')
 
 name = regexpi(ini_cell(:,1),'[A-Za-z]*[^\d*]','match');
-type = upper(unique(ini_cell(:,5),'stable'));
+type = upper(ini_cell(:,5));
 
 for i=1:length(name)
     ini_name(i) = name{i};
 end
-name = unique(ini_name,'stable');
+[name,ia] = unique(ini_name,'stable');
+type = type(ia);
 
 % get the grid initial positions by name
 for i = 1:length(name)
