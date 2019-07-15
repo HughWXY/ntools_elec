@@ -1,5 +1,5 @@
-function elec_mni = ntools_elec_fnirt_warp(elec_vox,preop_t1)
-% Spatial normalization to MNI152_1mm with FSL
+% function elec_mni = ntools_elec_fnirt_warp(elec_vox,preop_t1)
+% Spatial normalization to MNI152_2mm with FSL
 % by Josh Chen: jingyun.chen@nyulangone.org
 % 2019-07-15 beta version
 
@@ -11,45 +11,46 @@ function elec_mni = ntools_elec_fnirt_warp(elec_vox,preop_t1)
 fprintf('start fnirt warp process......\n')
 
 tic
-[preop_t1_path,preop_t1_img,ext] = fileparts(preop_t1);
+preop_t1_path = fileparts(preop_t1);
+
+if isempty(preop_t1_path)
+    preop_t1_path = pwd;
+    preop_t1 = fullfile(preop_t1_path,preop_t1);
+end
+
 fnirt_dir = fullfile(preop_t1_path,'fnirt');
 
 if ~exist(fnirt_dir,'dir')
     mkdir(fnirt_dir);
 end
 
-vox_img = gunzip(elec_vox,fnirt_dir);
-
-switch ext
-    case '.gz'
-        preop_t1 = gunzip(preop_t1,fnirt_dir);
-    case '.nii'
-        copyfile(preop_t1,fnirt_dir,'f');
-        preop_t1 = cellstr(fullfile(fnirt_dir,[preop_t1_img ext]));
-    otherwise
-        elec_mni = [];
-        disp('Please convert the Preop_T1 image into .nii or .nii.gz format first.')
-        return
+[pathstr, name, ext] = fileparts(elec_vox); 
+if isempty(pathstr)
+    pathstr = pwd;
+    elec_vox = fullfile(pathstr,elec_vox);
 end
 
-% extract brain mask
-unix(['cd ' fnirt_dir '; first_flirt ' char(preop_t1) ' first_flirt -cort;imrm first_flirt*stage*; '...
+%% extract brain mask
+unix(['cd ' fnirt_dir '; first_flirt ' preop_t1 ' first_flirt -cort;imrm first_flirt*stage*; '...
       'convert_xfm -omat first_flirt_cort_inv.mat -inverse first_flirt_cort.mat; '...
-      'flirt -in ${FSLDIR}/data/standard/MNI152_T1_1mm_brain_mask_dil.nii.gz -ref ' char(preop_t1) ' -out bmask -applyxfm -init first_flirt_cort_inv.mat; '...
-      'fslmaths ' char(preop_t1) ' -mas bmask bmasked_T1;']);
+      'flirt -in ${FSLDIR}/data/standard/MNI152_T1_1mm_brain_mask_dil.nii.gz -ref ' preop_t1 ' -out bmask -applyxfm -init first_flirt_cort_inv.mat; '...
+      'fslmaths ' preop_t1 ' -mas bmask bmasked_T1;']);
   
-% fnirt to MNI152
-[pathstr, name, ext] = fileparts(char(vox_img)); 
-unix(['cd ' fnirt_dir '; flirt -ref ${FSLDIR}/data/standard/MNI152_T1_1mm_brain -in bmasked_T1 -omat affine_transf.mat; '...
-      'fnirt --in=' char(preop_t1) ' --aff=affine_transf.mat --cout=nonlinear_transf --config=T1_2_MNI152_2mm; '...
-      'applywarp --ref=${FSLDIR}/data/standard/MNI152_T1_1mm --in=' char(preop_t1) ' --warp=nonlinear_transf --out=wT1; '... % warp T1
-      'applywarp --ref=${FSLDIR}/data/standard/MNI152_T1_1mm --in=' char(vox_img) ' --warp=nonlinear_transf --out=w' char(name) ' --interp=nn;']);
+%% fnirt to MNI152
+
+unix(['cd ' fnirt_dir ';flirt -ref ${FSLDIR}/data/standard/MNI152_T1_2mm_brain -in bmasked_T1 -omat affine_transf.mat; '...
+      'fnirt --in=' preop_t1 ' --aff=affine_transf.mat --cout=nonlinear_transf --config=T1_2_MNI152_2mm;']);
+  
+  
+unix(['cd ' fnirt_dir ';applywarp -r ${FSLDIR}/data/standard/MNI152_T1_1mm -i ' preop_t1 ' -w nonlinear_transf -o wT1; '... % warp T1
+unix(['cd ' fnirt_dir ';applywarp -r ${FSLDIR}/data/standard/MNI152_T1_1mm -i ' elec_vox ' -w nonlinear_transf -o w' [name,ext] ' --interp=nn;']);
 
 toc
 
+
 %% get elecs' locations
 
-warped_vox_img = fullfile(pathstr, ['w',name, ext, '.gz']);
+warped_vox_img = fullfile(fnirt_dir, ['w',name, ext]);
 hdr_ch2 = ntools_elec_load_nifti(warped_vox_img);
 
 s = max(unique(hdr_ch2.vol));
@@ -73,3 +74,6 @@ elec_ch2_vox = [elec_ch2_vox ones(s,1)];
 elec_ch2_ras = hdr_ch2.vox2ras*elec_ch2_vox';
 elec_mni = elec_ch2_ras';
 elec_mni = elec_mni(:,1:3);
+
+
+
