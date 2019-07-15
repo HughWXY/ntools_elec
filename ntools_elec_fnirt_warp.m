@@ -42,7 +42,7 @@ unix(['cd ' fnirt_dir ';flirt -ref ${FSLDIR}/data/standard/MNI152_T1_2mm_brain -
       'fnirt --in=' preop_t1 ' --aff=affine_transf.mat --cout=nonlinear_transf --config=T1_2_MNI152_2mm;']);
   
   
-unix(['cd ' fnirt_dir ';applywarp -r ${FSLDIR}/data/standard/MNI152_T1_1mm -i ' preop_t1 ' -w nonlinear_transf -o wT1; '... % warp T1
+unix(['cd ' fnirt_dir ';applywarp -r ${FSLDIR}/data/standard/MNI152_T1_1mm -i ' preop_t1 ' -w nonlinear_transf -o wT1; '])... % warp T1
 unix(['cd ' fnirt_dir ';applywarp -r ${FSLDIR}/data/standard/MNI152_T1_1mm -i ' elec_vox ' -w nonlinear_transf -o w' [name,ext] ' --interp=nn;']);
 
 toc
