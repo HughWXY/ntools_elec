@@ -1,4 +1,4 @@
-% function elec_mni = ntools_elec_fnirt_warp(elec_vox,preop_t1)
+function elec_mni = ntools_elec_fnirt_warp(elec_vox,preop_t1)
 % Spatial normalization to MNI152_2mm with FSL
 % by Josh Chen: jingyun.chen@nyulangone.org
 % 2019-07-15 beta version
