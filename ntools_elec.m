@@ -206,7 +206,7 @@ elec_all_scannerRAS = elec_all_tkrRAS - repmat(scanner2tkr,size(elec_all_tkrRAS,
 elec_vox = ntools_elec_savebin(elec_all_scannerRAS,hdr,fname_bin);
 
 %% transform into mni space
-elec_mni = ntools_elec_dartel_warp(fname_bin,fullfile(preop_img_path,preop_img_file));
+elec_mni = ntools_elec_fnirt_warp(fname_bin,fullfile(preop_img_path,preop_img_file));
 fname_mni = [PathName Sname '_coor_MNI_' datestr(now,29) '.txt'];
 ntools_elec_savetxt(fname_mni,[name num2cell(elec_mni) label]);
 

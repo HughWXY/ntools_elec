@@ -44,7 +44,7 @@ end
 hdr.vol = volume;
 
 % change datatype = 8 in case that there are more than 255 elecs
-hdr.datatype = 8;
+hdr.datatype = 8; hdr.bitpix = 32;
 ntools_elec_save_nifti(hdr,savename);
 
 fprintf('Done. (%f seconds) \n\n', toc);
