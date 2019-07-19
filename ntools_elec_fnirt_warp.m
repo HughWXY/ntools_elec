@@ -1,12 +1,8 @@
 function elec_mni = ntools_elec_fnirt_warp(elec_vox,preop_t1)
-% Spatial normalization to MNI152_2mm with FSL
+% Spatial normalization to MNI152_1mm with FSL
 % by Josh Chen: jingyun.chen@nyulangone.org
 % 2019-07-15 beta version
-
-% % for testing only
-% elec_vox_old=elec_vox;
-% elec_vox=fname_bin;
-% preop_t1=fullfile(preop_img_path,preop_img_file);
+% 2019-07-19 fixed bug of warped elec_bin being all 0 under FSL6.0
 
 fprintf('start fnirt warp process......\n')
 
@@ -42,11 +38,12 @@ unix(['cd ' fnirt_dir ';flirt -ref ${FSLDIR}/data/standard/MNI152_T1_2mm_brain -
       'fnirt --in=' preop_t1 ' --aff=affine_transf.mat --cout=nonlinear_transf --config=T1_2_MNI152_2mm;']);
   
   
-unix(['cd ' fnirt_dir ';applywarp -r ${FSLDIR}/data/standard/MNI152_T1_1mm -i ' preop_t1 ' -w nonlinear_transf -o wT1; '])... % warp T1
-unix(['cd ' fnirt_dir ';applywarp -r ${FSLDIR}/data/standard/MNI152_T1_1mm -i ' elec_vox ' -w nonlinear_transf -o w' [name,ext] ' --interp=nn;']);
+unix(['cd ' fnirt_dir ';applywarp -r ${FSLDIR}/data/standard/MNI152_T1_1mm -i ' preop_t1 ' -w nonlinear_transf -o wT1; ']); % warp T1
+unix(['cd ' fnirt_dir '; mri_convert ' elec_vox ' elec_int.nii.gz -odt int; '...
+      'applywarp -r ${FSLDIR}/data/standard/MNI152_T1_1mm -i elec_int -w nonlinear_transf -o w' [name,ext] ' --interp=nn; '...
+      'rm elec_int.nii.gz']);
 
 toc
-
 
 %% get elecs' locations
 
