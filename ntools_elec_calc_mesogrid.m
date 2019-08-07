@@ -1,4 +1,4 @@
-function elec = ntools_elec_calc_mesogrid(elec)
+function elec = ntools_elec_calc_mesogrid(elec,subjectpath)
 
 % calculate grid 64-128 for PMT model 2110-128-021
 
@@ -17,6 +17,15 @@ if any(mg)
         tf = strncmpi(name{i},elec(:,1),length(name{i}));
         % G01~G64
         elec_pos_mg = cell2mat(elec(tf,2:4));
+        
+        % determine the hemisphere that grid locates
+        if elec_pos_mg(:,1)>0
+            sph = 'rh';
+        elseif elec_pos_mg(:,1)<0
+            sph = 'lh';
+        else
+            error(['Grid looks across the hemisphere ', name{i}]);
+        end
         
         %%
         % interpolate to 15*15
@@ -47,7 +56,12 @@ if any(mg)
         xx = xx(ind); yy = yy(ind); zz = zz(ind);
 %         plot3(xx,yy,zz,'ro'); axis tight; axis equal;
 
-        elec_pos_mg = [elec_pos_mg;[xx,yy,zz]];
+        surf = fs_read_surf(fullfile(subjectpath,'surf', [sph '.pial-outer-smoothed']));
+        if ~isfield(surf,'coords')
+            surf.coords = surf.vertices;
+        end
+        kk = dsearchn(surf.coords,[xx,yy,zz]);
+        elec_pos_mg = [elec_pos_mg;surf.coords(kk,:)];
 
         for j = 1:size(elec_pos_mg,1)
             elec_mg(l+j,1) = cellstr(sprintf('%s%.3d',char(name{i}),j));

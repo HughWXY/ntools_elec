@@ -111,7 +111,7 @@ elec(:,1) = upper(name_num)';
 elec(:,2:4) = num2cell(elec_pos);
 elec(:,5) = elec_type;
 
-elec = ntools_elec_calc_mesogrid(elec);
+elec = ntools_elec_calc_mesogrid(elec,subjectpath);
 
 fprintf('Done \n\n');
 
