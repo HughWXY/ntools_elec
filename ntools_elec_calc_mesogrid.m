@@ -56,7 +56,7 @@ if any(mg)
         xx = xx(ind); yy = yy(ind); zz = zz(ind);
 %         plot3(xx,yy,zz,'ro'); axis tight; axis equal;
 
-        surf = fs_read_surf(fullfile(subjectpath,'surf', [sph '.pial-outer-smoothed']));
+        surf = fs_read_surf(fullfile(subjectpath,'surf', [sph '.pial']));
         if ~isfield(surf,'coords')
             surf.coords = surf.vertices;
         end
@@ -80,4 +80,53 @@ if any(mg)
     elec = [elec_mg;elec_regular_grid];
 
 end
+
+%% map EG to the surface
+
+eg = strncmpi('EG',elec(:,5),1);
+if any(eg)
+    elec_others = elec(~eg,:);
+    elec = elec(eg,:);
+    
+    name = regexpi(elec(:,1),'[A-Za-z]*[^\d*]','match');
+    name = unique([name{:}]','stable');
+    
+    elec_eg = cell(length(name),5); l = 0;
+    
+    for i=1:length(name)
+        tf = strncmpi(name{i},elec(:,1),length(name{i}));
+
+        elec_pos_eg = cell2mat(elec(tf,2:4));
+        
+        % determine the hemisphere that grid locates
+        if elec_pos_eg(:,1)>0
+            sph = 'rh';
+        elseif elec_pos_eg(:,1)<0
+            sph = 'lh';
+        else
+            error(['Grid looks across the hemisphere ', name{i}]);
+        end
+        
+        surf = fs_read_surf(fullfile(subjectpath,'surf', [sph '.pial']));
+        if ~isfield(surf,'coords')
+            surf.coords = surf.vertices;
+        end
+        kk = dsearchn(surf.coords,[elec_pos_eg(:,1),elec_pos_eg(:,2),elec_pos_eg(:,3)]);
+        elec_pos_eg = surf.coords(kk,:);
+
+        for j = 1:size(elec_pos_eg,1)
+            elec_eg(l+j,1) = cellstr(sprintf('%s%.3d',char(name{i}),j));
+            elec_eg(l+j,2:4) = num2cell(elec_pos_eg(j,:));
+            elec_eg(l+j,5) = {'EG'};
+        end
+        
+        l = j;
+
+    end
+    
+    elec = [elec_others; elec_eg];
+
+end
+
+
 

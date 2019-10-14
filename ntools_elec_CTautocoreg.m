@@ -39,11 +39,11 @@ if status, disp(msg); return; end
 elec_preop = [elecpath,name_elec,'_preop.nii.gz'];
 elec_preop_brain =  [elecpath,name_elec,'_preop_brain.nii.gz'];
 elec_preop_omat = [elecpath,name_elec,'_preop.mat'];
-unix(sprintf('flirt -in %s -ref %s -out %s -omat %s -dof 6 -cost normmi -interp nearestneighbour',elec_nii,preop_nii,elec_preop,elec_preop_omat),'-echo');
-unix(sprintf('bet %s %s_brain.nii.gz -f 0.5 -g 0 -m',preop_nii,[elecpath,name_preop]),'-echo');
+unix(sprintf('flirt -in %s -ref %s -out %s -omat %s -dof 6 -cost normmi -interp nearestneighbour',elec_nii,preop_nii,elec_preop,elec_preop_omat));
+unix(sprintf('bet %s %s_brain.nii.gz -f 0.5 -g 0 -m',preop_nii,[elecpath,name_preop]));
 unix(sprintf('fslmaths %s -mas %s_brain_mask.nii.gz %s',elec_preop,[elecpath,name_preop],elec_preop_brain));
 
 % check results
-unix(sprintf('fslview %s %s',preop_nii,elec_preop));
+unix(sprintf('fsleyes %s %s',preop_nii,elec_preop));
 
 
