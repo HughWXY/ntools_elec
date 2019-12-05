@@ -8,7 +8,7 @@ lgi_rh = exist([SubjectPath 'rh.pial-outer-smoothed'],'file');
 
 if lgi_lh==0
     % create the lh
-    if exist([SubjectPath 'lh.pial'],'file');
+    if exist([SubjectPath 'lh.pial'],'file')
         fprintf('Creating the left hemisphere outer smoothed brain surface \n');
         outer_smoothed('lh',SubjectPath);
     else
@@ -20,7 +20,7 @@ end
 
 if lgi_rh==0
     % create the rh
-    if exist([SubjectPath 'rh.pial'],'file');
+    if exist([SubjectPath 'rh.pial'],'file')
         fprintf('Creating the right hemisphere outer smoothed brain surface \n');
         outer_smoothed('rh',SubjectPath);
     else

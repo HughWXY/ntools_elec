@@ -3,7 +3,7 @@ clear; clc
 % using flirt dof 6 to coregister the postop MRI to preop MRI (usually FS
 % recon T1)
 
-coreg = '/home/wangx11/Synology/Loc/'; % your localization folder
+coreg = pwd; % your localization folder
 subj = getenv('SUBJECTS_DIR');
 
 t1 = menu('Select the pre-operation image','Pick up my own T1','Select Freesurfer T1.mgz');
@@ -15,7 +15,7 @@ end
 preop = fullfile(preoppath,preop);
 
 [aseg,asegpath] = uigetfile('*.mgz','Select subject aseg file',preoppath);
-if ~isnumeric(aseg), aseg = fullfile(asegpath,aseg); else aseg = []; end;
+if ~isnumeric(aseg), aseg = fullfile(asegpath,aseg); else aseg = []; end
 
 [elecT1, elecpath] = uigetfile('*.*', 'Select the post-operation T1 image with electrodes',coreg);
 if ~isnumeric(elecT1),elecT1 = fullfile(elecpath,elecT1); else disp('No electrode image selected'); return; end
