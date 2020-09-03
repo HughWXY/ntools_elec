@@ -61,6 +61,8 @@ An example of initial electrodes coordinates text:
 
 In the 5th column of the initial text file, indicate what type of the electrode it is (G for grid, D for depth and S for strip).
 
+Alternatively, manual localization can also be done with [3D Slicer](https://www.slicer.org/), which allows direct pinpointing electrodes in 3D viewer. See step-by-step instructions [here](Manual_Localization_Instructions.pdf).
+
 ### Automated Projection
 
 Run ntools_elec in Matlab command window. In the pop-ups:
