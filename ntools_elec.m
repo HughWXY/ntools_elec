@@ -285,3 +285,14 @@ if exist(dfile,'file'), delete(dfile); end
 
 % end
 
+%% -------Optional: sequentially call ntools_elec_plot and ntools_elec_saveAnatomical
+% if strcmp(sph_s,'both')
+%     ntools_elec_plot(fname_t1, {lh_mat, rh_mat});
+%     ntools_elec_saveAnatomical(Sdir,'lh',fname_t1,fname_bin);
+%     ntools_elec_saveAnatomical(Sdir,'rh',fname_t1,fname_bin);
+%     ntools_elec_saveAnatomical(Sdir,'depth',fname_t1,fname_bin);
+% else
+%     ntools_elec_plot(fname_t1,surf_mat);
+%     ntools_elec_saveAnatomical(Sdir,sph_s,fname_t1,fname_bin);
+%     ntools_elec_saveAnatomical(Sdir,'depth',fname_t1,fname_bin);
+% end
