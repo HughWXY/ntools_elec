@@ -1,6 +1,6 @@
 # Electrode Localization Toolbox Manual
 
-developed by Hugh Wang (Xiuyuan.Wang at nyumc.org), Department of Neurology, New York University School of Medicine
+developed by Hugh Wang (Xiuyuan.Wang at nyumc.org) and Jingyun Chen (Jingyun.Chen at nyulangone.org), Department of Neurology, New York University School of Medicine
 
 **Attention**:
 >The Electrode Localization Toolbox was tested and only runs under 64bit Lunix or OSX (Thanks to David Groppe  for compiling the mex files under OSX 10.9.5 / 2015-6-3)
