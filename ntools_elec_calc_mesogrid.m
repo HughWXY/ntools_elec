@@ -115,7 +115,7 @@ if any(eg)
         elec_pos_eg = surf.coords(kk,:);
 
         for j = 1:size(elec_pos_eg,1)
-            elec_eg(l+j,1) = cellstr(sprintf('%s%.3d',char(name{i}),j));
+            elec_eg(l+j,1) = cellstr(sprintf('%s%.3d',char(name{i}),j+64)); % EG name: G065-G128
             elec_eg(l+j,2:4) = num2cell(elec_pos_eg(j,:));
             elec_eg(l+j,5) = {'EG'};
         end
