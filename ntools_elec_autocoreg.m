@@ -107,3 +107,12 @@ else
     unix(sprintf('fsleyes %s %s',elec_preopT1, elec_preop_brainT1));
 end
 
+% deface preop
+[path,name,ext] = fileparts(preop_nii);
+preop_deface = fullfile(path,['Defaced_' name ext]);
+unix(sprintf('mri_deface %s $FREESURFER_HOME/average/talairach_mixed_with_skull.gca $FREESURFER_HOME/average/face.gca %s',preop_nii, preop_deface));
+
+% deface postop
+[path,name,ext] = fileparts(elecT1_nii);
+postop_deface = fullfile(path,['Defaced_' name ext]);
+unix(sprintf('mri_deface %s $FREESURFER_HOME/average/talairach_mixed_with_skull.gca $FREESURFER_HOME/average/face.gca %s',elecT1_nii, postop_deface));
