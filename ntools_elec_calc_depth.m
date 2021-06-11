@@ -34,12 +34,16 @@ for i = 1:length(name)
         elec_temp(all(cellfun(@isempty,elec_temp),2),:) = [];
         elec_num = regexpi(elec_temp(:,1),'[^A-Za-z]*[\d*]','match');
         elec_num(all(cellfun(@isempty,elec_num),2),:) = [];
-        if length(elec_num)~=2
-            error('only 2 initial positions are required');
+
+        if length(elec_num)<2
+            error('at least 2 initial positions are required');
+        elseif length(elec_num)==2 % two ends
+            elec_ini_loc = elec_temp(:,2:4);
+            [E_temp, E_temp_pos]= ntools_elec_locpos(cell2mat(elec_ini_loc),[str2double(cell2mat(elec_num{1}));str2double(cell2mat(elec_num{2}))]);
+            elec_temp2.(char(name{i})) = [E_temp_pos E_temp];
+        else % all elec
+            elec_temp2.(char(name{i})) = [str2num(cell2mat(erase(elec_temp(:,1),char(name{i})))) cell2mat(elec_temp(:,2:4))];
         end
-        elec_ini_loc = elec_temp(:,2:4);
-        [E_temp, E_temp_pos]= ntools_elec_locpos(cell2mat(elec_ini_loc),[str2double(cell2mat(elec_num{1}));str2double(cell2mat(elec_num{2}))]);
-        elec_temp2.(char(name{i})) = [E_temp_pos E_temp];
 
 end
 
