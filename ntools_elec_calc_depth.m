@@ -34,7 +34,6 @@ for i = 1:length(name)
         elec_temp(all(cellfun(@isempty,elec_temp),2),:) = [];
         elec_num = regexpi(elec_temp(:,1),'[^A-Za-z]*[\d*]','match');
         elec_num(all(cellfun(@isempty,elec_num),2),:) = [];
-
         if length(elec_num)<2
             error('at least 2 initial positions are required');
         elseif length(elec_num)==2 % two ends
@@ -42,9 +41,13 @@ for i = 1:length(name)
             [E_temp, E_temp_pos]= ntools_elec_locpos(cell2mat(elec_ini_loc),[str2double(cell2mat(elec_num{1}));str2double(cell2mat(elec_num{2}))]);
             elec_temp2.(char(name{i})) = [E_temp_pos E_temp];
         else % all elec
-            elec_temp2.(char(name{i})) = [str2num(cell2mat(erase(elec_temp(:,1),char(name{i})))) cell2mat(elec_temp(:,2:4))];
+            ctmp = erase(elec_temp(:,1),char(name{i}));
+            c1=[];
+            for d = 1:length(elec_num)
+                c1(d)=str2double(ctmp{d});
+            end
+            elec_temp2.(char(name{i})) = [c1' cell2mat(elec_temp(:,2:4))];
         end
-
 end
 
 %% get the data from the struct
